@@ -35,82 +35,88 @@ function findLink(string) {
 
 
 function array(links) { 
+    
     const results = links.map(link => fetch(link)
     .then( res  => {
+        //const validatedLinks= []
         if(res.status == 200){
-            //console.log(`${link} good one baby of light`.underline.brightGreen)
-            let goodResult = `url: ${link} status: ${res.status} text: ${res.statusText}`
+            //console.log(`${link} good one `.underline.brightGreen)
+            let goodResult = {
+                url: link,
+                status: res.status,
+                text: res.statusText 
+            }
+            //return validatedLinks.push(goodResult)
             return goodResult
         }
         else if (res.status == 404){
-            //console.log(`${link} bad one, get angry`.underline.brightRed)
-            let badResult = `url: ${link} status: ${res.status} text: ${res.statusText}`
+            //console.log(`${link} bad one`.underline.brightRed)
+            let badResult = {
+                url: link,
+                status: res.status,
+                text: res.statusText 
+            }
+            //return validatedLinks.push(badResult)
             return badResult
         }
     })
     .catch(
      error => {
-        console.log(`${error.url} bad one, get angry`.underline.brightRed)
+        console.log(`${error.url} bad one.`)
     })
     )
-    return results
+   
+    // console.log('que ondi:', results)
+    // return Promise.all(results).then(resp => {
+    //     resp 
+    // } ) 
+    return results 
    };
    
-async function validate(results){
-    //const validateResults = []
-    const validations = await Promise.all(results)
+function validate (array){
+    const validations = Promise.all(array)
     .then(res => {
-        //console.log(`${res}`) 
-        return res  
-     })
-    //  validateResults.push(validations) 
-    //  console.log(validateResults)
-    //  return validateResults
-    //console.log(validations)
-    return validations    
-}
-
-async function stats (array){
-    const validations = await Promise.all(array)
-    .then(res => {
-        console.log("✔ Total Links:",res.length)
-    //console.log(array)
-        console.log("✔ Total Working Links: ",res.reduce((acc, el)=>{
-            //console.log(el.status === 200)
-                if(el.status === 200 && true){      
-                return acc += 1
-              }
-              return acc += 1
-          },0))
-        console.log("✖ Total Broken links: ",res.reduce((acc, el)=>{
-            //console.log(el.status === 404)
-                if(el.status === 404){
-                let brokenLinks = el.map(broken)
-                function broken (){
-                    el.status === 404
-                }
-                
-                return brokenLinks.length
-            }
-            return acc  += 1       
-          },0))
+        //console.log('this is an array validate:', res)
+        //stats(res)
         return res
     })
     
+        
+        return validations
+}    
+    
+function stats(res){
+    //console.log('this is an array for stats:', res)
+    console.log("✔ Total Links:",res.length)
+    console.log("✔ Total Working Links: ",res.reduce((acc, el)=>{
+        //console.log(el.status === 200)
+            if(el.status === 200){      
+                return acc +=1
+        }
+        return acc ++
+    },0))
+    console.log("✖ Total Broken links: ",res.reduce((acc, el)=>{
+        //console.log(el.status === 404)
+        if(el.status === 404){
+            return acc+=1
+        }
+        return acc ++       
+        },0))
 
-          return validations
 }
 
 
 
 
 
-let validateLink =() => {
- let ejecutar = init()
- let arreglo = findLink(ejecutar)
- let check =  array (arreglo)
- let xxx=  validate(check)
- let jj= stats(check)
- return jj
+
+
+let validateStats =async () => {
+ let getInit = init()
+ let getLinks = findLink(getInit)
+ let getArray =  array (getLinks)
+ let getVal=  await validate(getArray)
+ let getStats=  await stats(getVal)
+ return getStats
 }
-validateLink();
+validateStats();
